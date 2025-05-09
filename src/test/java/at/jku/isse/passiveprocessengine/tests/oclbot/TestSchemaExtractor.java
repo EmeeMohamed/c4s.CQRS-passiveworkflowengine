@@ -188,4 +188,14 @@ class TestSchemaExtractor {
 			System.out.println(schema);
 		});						
 	}
+
+	// My tests!
+
+	@Test
+	void testUseTIMWorkItem() throws Exception {
+		HumanReadableSchemaExtractor schemaExtractor = new HumanReadableSchemaExtractor(schemaReg);
+		schemaExtractor.useTIMWorkItem();
+	}
+
+	//End of my tests
 }

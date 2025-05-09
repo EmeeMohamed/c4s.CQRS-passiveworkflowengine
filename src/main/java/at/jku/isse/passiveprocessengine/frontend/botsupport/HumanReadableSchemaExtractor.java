@@ -210,7 +210,34 @@ public class HumanReadableSchemaExtractor {
 		}
 		return sb.toString();
 	}
-	
-	
+
+	//My methods
+
+	public void useTIMWorkItem() {
+		TIMWorkItem item1 = new TIMWorkItem("Bug");
+		TIMWorkItem item2 = new TIMWorkItem("Requirement");
+
+		Map<String, String> traceMap = new HashMap<>();
+
+		traceMap.put("Bug", "affectedByItems");
+		traceMap.put("Requirement", "affectedItems");
+
+		TraceAssigner assigner = new TraceAssigner(traceMap);
+		Trace trace = assigner.assignTraceByEndpointName(item1.getName());
+		Trace trace1 = assigner.assignTraceByEndpointName(item2.getName());
+
+		item2.setTrace(trace);
+		item1.setTrace(trace1);
+
+		System.out.println("The " + item2.getName());
+		System.out.println("Trace by " + item2.getTrace().getName());
+		System.out.println("When the endpoint is " + item2.getTrace().getEndpointName());
+
+		System.out.println("\nThe " + item1.getName());
+		System.out.println("Trace by " + item1.getTrace().getName());
+		System.out.println("When the endpoint is " + item1.getTrace().getEndpointName());
+
+	}
+	//end of my methods
 }
  
