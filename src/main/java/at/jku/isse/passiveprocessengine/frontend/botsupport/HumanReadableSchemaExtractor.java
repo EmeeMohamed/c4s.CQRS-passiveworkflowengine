@@ -217,25 +217,27 @@ public class HumanReadableSchemaExtractor {
 		TIMWorkItem item1 = new TIMWorkItem("Bug");
 		TIMWorkItem item2 = new TIMWorkItem("Requirement");
 
-		Map<String, String> traceMap = new HashMap<>();
+		Trace req = new Trace("affectedByItems", item1);
+		Trace bug = new Trace("affectedItems", item2);
 
-		traceMap.put("Bug", "affectedByItems");
-		traceMap.put("Requirement", "affectedItems");
+		item1.setTrace(bug);
+		item2.setTrace(req);
 
-		TraceAssigner assigner = new TraceAssigner(traceMap);
-		Trace trace = assigner.assignTraceByEndpointName(item1.getName());
-		Trace trace1 = assigner.assignTraceByEndpointName(item2.getName());
 
-		item2.setTrace(trace);
-		item1.setTrace(trace1);
+		System.out.println(item1.getName());
+		for (Trace trace : item1.getTraces()) {
+			System.out.println(trace.getName() + " " + trace.getEndpointName().getName());
+		}
 
-		System.out.println("The " + item2.getName());
-		System.out.println("Trace by " + item2.getTrace().getName());
-		System.out.println("When the endpoint is " + item2.getTrace().getEndpointName());
+		System.out.println();
 
-		System.out.println("\nThe " + item1.getName());
-		System.out.println("Trace by " + item1.getTrace().getName());
-		System.out.println("When the endpoint is " + item1.getTrace().getEndpointName());
+		System.out.println(item2.getName());
+		for (Trace trace : item2.getTraces()) {
+			System.out.println(trace.getName() + " " + trace.getEndpointName().getName());
+		}
+	}
+
+	public void connectTIMWorkItemWithSchema(List<PPEPropertyType> types) {
 
 	}
 	//end of my methods
