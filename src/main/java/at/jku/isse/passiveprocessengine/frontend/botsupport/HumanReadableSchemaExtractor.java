@@ -216,28 +216,56 @@ public class HumanReadableSchemaExtractor {
 	public void useTIMWorkItem() {
 		TIMWorkItem item1 = new TIMWorkItem("Bug");
 		TIMWorkItem item2 = new TIMWorkItem("Requirement");
+		TIMWorkItem item3 = new TIMWorkItem("Change Request");
 
 		Trace req = new Trace("affectedByItems", item1);
+		Trace req2 = new Trace("predecessorItems", item3);
 		Trace bug = new Trace("affectedItems", item2);
 
 		item1.setTrace(bug);
 		item2.setTrace(req);
+		item2.setTrace(req2);
 
 
-		System.out.println(item1.getName());
+		System.out.println("WorkItem: " + item1.getName());
 		for (Trace trace : item1.getTraces()) {
-			System.out.println(trace.getName() + " " + trace.getEndpointName().getName());
+			System.out.println("Trace: " + trace.getName() + " -> Endpoint: " + trace.getEndpointName().getName());
 		}
 
 		System.out.println();
 
-		System.out.println(item2.getName());
+		System.out.println("WorkItem: " + item2.getName());
 		for (Trace trace : item2.getTraces()) {
-			System.out.println(trace.getName() + " " + trace.getEndpointName().getName());
+			System.out.println("Trace: " + trace.getName() + " -> Endpoint: " + trace.getEndpointName().getName());
 		}
 	}
 
 	public void connectTIMWorkItemWithSchema(List<PPEPropertyType> types) {
+		List<TIMWorkItem> workItems = new ArrayList<>();
+		Map<String, TIMWorkItem> nameMap = new HashMap<>();
+
+		for (PPEPropertyType type : types) {
+			TIMWorkItem item = new TIMWorkItem(type.getName());
+			workItems.add(item);
+			nameMap.put(type.getName(), item);
+		}
+
+		//from req to bug trace by affectedByItems
+		if (nameMap.containsKey("Requirement") && nameMap.containsKey("Bug")) {
+			nameMap.get("Requirement").setTrace(new Trace("affectedByItems", nameMap.get("Bug")));
+		}
+
+		//from bug to req trace by affectedItems
+		if (nameMap.containsKey("Bug") && nameMap.containsKey("Requirement")) {
+			nameMap.get("Bug").setTrace(new Trace("affectedItems", nameMap.get("Requirement")));
+		}
+
+		for (TIMWorkItem item : workItems) {
+			System.out.println("WorkItem: " + item.getName());
+			for (Trace trace : item.getTraces()) {
+				System.out.println("Trace: " + trace.getName() + " Endpoint: " + trace.getEndpointName().getName());
+			}
+		}
 
 	}
 	//end of my methods

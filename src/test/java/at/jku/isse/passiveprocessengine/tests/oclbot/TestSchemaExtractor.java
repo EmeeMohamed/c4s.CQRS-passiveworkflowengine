@@ -202,7 +202,7 @@ class TestSchemaExtractor {
 		HumanReadableSchemaExtractor schemaExtractor = new HumanReadableSchemaExtractor(schemaReg);
 		List<String> items = new ArrayList<>();
 //findFirst().get().getName()
-		items.add(artRes.getAvailableInstanceTypes().stream().);
+		items.add(artRes.getAvailableInstanceTypes().stream().); // I may use collect here with stream
 		System.out.println(items);
 		//schemaExtractor.connectTIMWorkItemWithSchema(items);
 	}
