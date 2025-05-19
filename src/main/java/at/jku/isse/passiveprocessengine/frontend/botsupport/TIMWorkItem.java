@@ -2,7 +2,6 @@ package at.jku.isse.passiveprocessengine.frontend.botsupport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TIMWorkItem {
     private String name;
@@ -24,18 +23,16 @@ public class TIMWorkItem {
 
 class Trace {
     private String name;
-    private TIMWorkItem endpointName;
+    private String endpointName;
 
-    public Trace() {}
-
-    public Trace(String name, TIMWorkItem endpointName) {
+    public Trace(String name, String endpointName) {
         this.name = name;
         this.endpointName = endpointName;
     }
     public String getName() { return name; }
-    public TIMWorkItem getEndpointName() { return endpointName; }
+    public String getEndpointName() { return endpointName; }
 
     public void setName(String name) { this.name = name; }
-    public void setEndpointName(TIMWorkItem endpointName) { this.endpointName = endpointName; }
+    public void setEndpointName(String endpointName) { this.endpointName = endpointName; }
 
 }

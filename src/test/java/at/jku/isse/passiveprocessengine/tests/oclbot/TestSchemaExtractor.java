@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import at.jku.isse.passiveprocessengine.frontend.botsupport.TIMWorkItem;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +127,7 @@ class TestSchemaExtractor {
 	}
 	
 	@Test
-	void testPrintSchemaSubselection() throws ProcessException {
+	void testPrintSchemaSubselection() throws ProcessException { //try to test it with the TIM
 		var schemaExtractor = new HumanReadableSchemaExtractor(schemaReg);
 		//CrIssueFd
 		var subsetIds = List.of("CrIssueFd", "Issue", "Requirement", "L3Requirements");
@@ -174,7 +175,7 @@ class TestSchemaExtractor {
 		assertEquals(1, steps.size());
 		var types = new ArrayList<PPEInstanceType>();
 		types.addAll(steps);
-		var subsetIds = List.of("Bug", "Requirement", "L3Requirements");
+		var subsetIds = List.of("Bug", "Requirement", "Change Request", "L3Requirements");
 		types.addAll(artRes.getAvailableInstanceTypes().stream()
 						.filter(type -> subsetIds.contains(type.getName()))
 						.toList());
@@ -196,16 +197,7 @@ class TestSchemaExtractor {
 		HumanReadableSchemaExtractor schemaExtractor = new HumanReadableSchemaExtractor(schemaReg);
 		schemaExtractor.useTIMWorkItem();
 	}
-/*
-	@Test
-	void testConnectTIMWorkItemWithSchema() throws Exception {
-		HumanReadableSchemaExtractor schemaExtractor = new HumanReadableSchemaExtractor(schemaReg);
-		List<String> items = new ArrayList<>();
-//findFirst().get().getName()
-		items.add(artRes.getAvailableInstanceTypes().stream().); // I may use collect here with stream
-		System.out.println(items);
-		//schemaExtractor.connectTIMWorkItemWithSchema(items);
-	}
-*/
+
+
 	//End of my tests
 }

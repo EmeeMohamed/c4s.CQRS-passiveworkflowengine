@@ -1,16 +1,7 @@
 package at.jku.isse.passiveprocessengine.frontend.botsupport;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import at.jku.isse.designspace.artifactconnector.core.repository.CoreTypeFactory;
@@ -114,7 +105,7 @@ public class HumanReadableSchemaExtractor {
 			.toList();
 		
 	}
-	
+	//name, of multiple bug
 	private String getPropertyDescription(PPEInstanceType type, PPEPropertyType prop) {
 		if (samples.containsKey(type)) { // we have some sample values to add
 			String sampleValues = samples.get(type).stream()
@@ -196,7 +187,9 @@ public class HumanReadableSchemaExtractor {
 								
 		return new AbstractMap.SimpleEntry<>(superProps, specificProps);
 	}
-	
+	//call my TIM
+	//check if the PPEInstanceType name has the same name in my TIM data:
+	// If yes then connect it with it trace
 	public String compileSchemaList(PPEInstanceType parentType, List<PPEInstanceType> group, Set<String> parentProps, List<ArrayList<String>> individualProps) {
 		StringBuffer sb = new StringBuffer(String.format("\r\nGeneric object type %s contains following properties:", parentType.getName()));
 		parentProps.stream().sorted().forEach(prop -> sb.append(prop));
@@ -208,66 +201,65 @@ public class HumanReadableSchemaExtractor {
 			sb.append(String.format("\r\n\r\nObject type %s contains following properties:", type.getName()));
 			props.stream().sorted().forEach(prop -> sb.append(prop));
 		}
+
+		//I started work here
+
+		List<TIMWorkItem> workItems = useTIMWorkItem();
+		Map<String, List<Trace>> typeWithTraces = new HashMap<>();
+
+		System.out.println("----------------------");
+		for (int i = 0 ; i < group.size() ; i++) {
+			var type = group.get(i);
+			workItems.stream().filter(item -> item.getName().equals(type.getName()))
+					.forEach(item -> typeWithTraces.putIfAbsent(item.getName(), item.getTraces()));
+			sb.append(typeWithTraces);
+		}
+
+		for (String item : typeWithTraces.keySet()){
+			System.out.println("Item: " + item);
+            for (Trace trace : typeWithTraces.get(item)) {
+                System.out.println("Trace: " + trace.getName() + " Endpoint: " + trace.getEndpointName());
+            }
+        }
+
+		System.out.println("----------------------");
+
 		return sb.toString();
 	}
 
 	//My methods
 
-	public void useTIMWorkItem() {
-		TIMWorkItem item1 = new TIMWorkItem("Bug");
-		TIMWorkItem item2 = new TIMWorkItem("Requirement");
-		TIMWorkItem item3 = new TIMWorkItem("Change Request");
+	public List<TIMWorkItem> useTIMWorkItem() {
+		List<TIMWorkItem> items = new ArrayList<>();
 
-		Trace req = new Trace("affectedByItems", item1);
-		Trace req2 = new Trace("predecessorItems", item3);
-		Trace bug = new Trace("affectedItems", item2);
+		items.add(new TIMWorkItem("Bug"));//0
+		items.add(new TIMWorkItem("Requirement"));//1
+		items.add(new TIMWorkItem("Change Request"));//2
 
-		item1.setTrace(bug);
-		item2.setTrace(req);
-		item2.setTrace(req2);
+		Trace req = new Trace("affectedByItems", items.get(0).getName());
+		Trace req2 = new Trace("predecessorItems", items.get(2).getName());
+		Trace bug = new Trace("affectsItems", items.get(1).getName());
 
+		items.get(0).setTrace(bug);
+		items.get(1).setTrace(req);
+		items.get(1).setTrace(req2);
 
-		System.out.println("WorkItem: " + item1.getName());
-		for (Trace trace : item1.getTraces()) {
+	/*
+		System.out.println("WorkItem: " + items.get(0).getName());
+		for (Trace trace : items.get(0).getTraces()) {
 			System.out.println("Trace: " + trace.getName() + " -> Endpoint: " + trace.getEndpointName().getName());
 		}
 
 		System.out.println();
 
-		System.out.println("WorkItem: " + item2.getName());
-		for (Trace trace : item2.getTraces()) {
+		System.out.println("WorkItem: " + items.get(1).getName());
+		for (Trace trace : items.get(1).getTraces()) {
 			System.out.println("Trace: " + trace.getName() + " -> Endpoint: " + trace.getEndpointName().getName());
 		}
+	 */
+		return items;
 	}
 
-	public void connectTIMWorkItemWithSchema(List<PPEPropertyType> types) {
-		List<TIMWorkItem> workItems = new ArrayList<>();
-		Map<String, TIMWorkItem> nameMap = new HashMap<>();
-
-		for (PPEPropertyType type : types) {
-			TIMWorkItem item = new TIMWorkItem(type.getName());
-			workItems.add(item);
-			nameMap.put(type.getName(), item);
-		}
-
-		//from req to bug trace by affectedByItems
-		if (nameMap.containsKey("Requirement") && nameMap.containsKey("Bug")) {
-			nameMap.get("Requirement").setTrace(new Trace("affectedByItems", nameMap.get("Bug")));
-		}
-
-		//from bug to req trace by affectedItems
-		if (nameMap.containsKey("Bug") && nameMap.containsKey("Requirement")) {
-			nameMap.get("Bug").setTrace(new Trace("affectedItems", nameMap.get("Requirement")));
-		}
-
-		for (TIMWorkItem item : workItems) {
-			System.out.println("WorkItem: " + item.getName());
-			for (Trace trace : item.getTraces()) {
-				System.out.println("Trace: " + trace.getName() + " Endpoint: " + trace.getEndpointName().getName());
-			}
-		}
-
-	}
 	//end of my methods
 }
  
