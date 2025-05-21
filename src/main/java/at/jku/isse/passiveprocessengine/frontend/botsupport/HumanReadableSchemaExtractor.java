@@ -190,7 +190,7 @@ public class HumanReadableSchemaExtractor {
 	//call my TIM
 	//check if the PPEInstanceType name has the same name in my TIM data:
 	// If yes then connect it with it trace
-	public String compileSchemaList(PPEInstanceType parentType, List<PPEInstanceType> group, Set<String> parentProps, List<ArrayList<String>> individualProps) {
+	public String compileSchemaList(PPEInstanceType parentType, List<PPEInstanceType> group, Set<String> parentProps, List<ArrayList<String>> individualProps, List<TIMWorkItem> workItems) {
 		StringBuffer sb = new StringBuffer(String.format("\r\nGeneric object type %s contains following properties:", parentType.getName()));
 		parentProps.stream().sorted().forEach(prop -> sb.append(prop));
 				
@@ -204,25 +204,31 @@ public class HumanReadableSchemaExtractor {
 
 		//I started work here
 
-		List<TIMWorkItem> workItems = useTIMWorkItem();
-		Map<String, List<Trace>> typeWithTraces = new HashMap<>();
 
-		System.out.println("----------------------");
-		for (int i = 0 ; i < group.size() ; i++) {
+		Map<String, List<Trace>> typeWithTraces = new HashMap<>();
+		List<String> items = workItems.stream().map(workItem -> workItem.getName()).collect(Collectors.toList());
+
+		for (int i = 0; i < group.size() ; i++) {
 			var type = group.get(i);
-			workItems.stream().filter(item -> item.getName().equals(type.getName()))
-					.forEach(item -> typeWithTraces.putIfAbsent(item.getName(), item.getTraces()));
-			sb.append(typeWithTraces);
+			for (int j = 0 ; j < items.size() ; j++) {
+				if (type.getName().equals(items.get(j))) {
+					typeWithTraces.putIfAbsent(type.getName(), workItems.get(j).getTraces());
+				}
+			}
+		}
+		System.out.println("typeWithTraces: " + typeWithTraces);
+
+		for (Map.Entry<String, List<Trace>> entry : typeWithTraces.entrySet()) {
+			String key = entry.getKey();
+			List<Trace> traces = entry.getValue();
+
+			sb.append("WorkItem: ").append(key).append("\n");
+
+			for (Trace trace : traces) {
+				sb.append(" Traces: ").append(trace.getName()).append(" Endpoint: ").append(trace.getEndpointName()).append("\n");
+			}
 		}
 
-		for (String item : typeWithTraces.keySet()){
-			System.out.println("Item: " + item);
-            for (Trace trace : typeWithTraces.get(item)) {
-                System.out.println("Trace: " + trace.getName() + " Endpoint: " + trace.getEndpointName());
-            }
-        }
-
-		System.out.println("----------------------");
 
 		return sb.toString();
 	}
