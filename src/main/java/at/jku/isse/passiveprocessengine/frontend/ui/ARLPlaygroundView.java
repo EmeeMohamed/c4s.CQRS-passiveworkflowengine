@@ -414,8 +414,8 @@ public class ARLPlaygroundView extends VerticalLayout  implements BeforeLeaveObs
 			StringBuffer schemaStringSet = new StringBuffer();							
 			clusters.entrySet().forEach(entry -> {
 						var props = extractor.processSubgroup(entry.getKey(), entry.getValue());
-						var schema = extractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
-						schemaStringSet.append(schema);
+						//var schema = extractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
+						//schemaStringSet.append(schema);
 					});													
 			lastUsedContext = currentSelectedContextType;
 			ruleRelevantContext = currentSelection;

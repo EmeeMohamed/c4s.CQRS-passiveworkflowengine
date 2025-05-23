@@ -160,8 +160,8 @@ class TestWithEvalData {
 		StringBuffer sb = new StringBuffer();
 		subsetGroups.entrySet().forEach(entry -> {
 			var props = schemaGen.processSubgroup(entry.getKey(), entry.getValue());
-			var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
-			sb.append(schema);
+			//var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
+			//sb.append(schema);
 		});						
 		return sb.toString();
 	}

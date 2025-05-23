@@ -1,22 +1,27 @@
 package at.jku.isse.passiveprocessengine.frontend.botsupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TIMWorkItem {
     private String name;
-    private List<Trace> traces;
+    private List<Trace> traceList;
 
     public TIMWorkItem(String name) {
         this.name = name;
-        traces = new ArrayList<Trace>();
+        traceList = new ArrayList<Trace>();
     }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public void setTrace(Trace trace) { this.traces.add(trace); }
-    public List<Trace> getTraces() { return traces; }
+    public void setTrace(String traceName, String endpoint) {
+        traceList.add(new Trace(traceName, endpoint));
+    }
+    public List<Trace> getTraces() {
+        return  traceList;}
 
 
 }

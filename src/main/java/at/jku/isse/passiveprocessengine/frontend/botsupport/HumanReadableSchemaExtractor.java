@@ -216,16 +216,14 @@ public class HumanReadableSchemaExtractor {
 				}
 			}
 		}
-		System.out.println("typeWithTraces: " + typeWithTraces);
 
 		for (Map.Entry<String, List<Trace>> entry : typeWithTraces.entrySet()) {
 			String key = entry.getKey();
 			List<Trace> traces = entry.getValue();
-
-			sb.append("WorkItem: ").append(key).append("\n");
+			sb.append(String.format("\r\n\r\nObject type %s contains following properties:", key)).append("\n");
 
 			for (Trace trace : traces) {
-				sb.append(" Traces: ").append(trace.getName()).append(" Endpoint: ").append(trace.getEndpointName()).append("\n");
+				sb.append(trace.getName()).append(" , Endpoint: ").append(trace.getEndpointName()).append("\n");
 			}
 		}
 
@@ -242,13 +240,13 @@ public class HumanReadableSchemaExtractor {
 		items.add(new TIMWorkItem("Requirement"));//1
 		items.add(new TIMWorkItem("Change Request"));//2
 
-		Trace req = new Trace("affectedByItems", items.get(0).getName());
-		Trace req2 = new Trace("predecessorItems", items.get(2).getName());
-		Trace bug = new Trace("affectsItems", items.get(1).getName());
+		//Trace req = new Trace("affectedByItems", items.get(0).getName());
+		//Trace req2 = new Trace("predecessorItems", items.get(2).getName());
+		//Trace bug = new Trace("affectsItems", items.get(1).getName());
 
-		items.get(0).setTrace(bug);
-		items.get(1).setTrace(req);
-		items.get(1).setTrace(req2);
+		items.get(0).setTrace("affectedByItems", items.get(0).getName());
+		items.get(1).setTrace("predecessorItems", items.get(2).getName());
+		items.get(1).setTrace("affectsItems", items.get(1).getName());
 
 	/*
 		System.out.println("WorkItem: " + items.get(0).getName());
