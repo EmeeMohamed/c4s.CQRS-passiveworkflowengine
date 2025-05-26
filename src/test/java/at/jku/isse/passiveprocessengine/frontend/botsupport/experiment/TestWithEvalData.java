@@ -88,7 +88,7 @@ class TestWithEvalData {
 	void testEvalLLMGeneration() throws Exception {
 		// run for all eval data, then store as json
 		// reset bot after each eval constraint data round
-		runEvaluationAndLog(c3, bot);		
+		runEvaluationAndLog(c3, bot);
 	}
 	
 	@Test 
@@ -164,6 +164,7 @@ class TestWithEvalData {
 
 			//I added items as an empty list .................................................................................................................
 			List<TIMWorkItem> items = new ArrayList<>();
+
 			var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(), items);
 			sb.append(schema);
 		});						
