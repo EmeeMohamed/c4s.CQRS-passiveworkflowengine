@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import at.jku.isse.passiveprocessengine.frontend.botsupport.TIMWorkItem;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -414,8 +415,11 @@ public class ARLPlaygroundView extends VerticalLayout  implements BeforeLeaveObs
 			StringBuffer schemaStringSet = new StringBuffer();							
 			clusters.entrySet().forEach(entry -> {
 						var props = extractor.processSubgroup(entry.getKey(), entry.getValue());
-						//var schema = extractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
-						//schemaStringSet.append(schema);
+
+						//I added items as an empty list ..................................................................................................
+						List<TIMWorkItem> items = new ArrayList<>();
+						var schema = extractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(), items);
+						schemaStringSet.append(schema);
 					});													
 			lastUsedContext = currentSelectedContextType;
 			ruleRelevantContext = currentSelection;

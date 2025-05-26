@@ -187,21 +187,20 @@ class TestSchemaExtractor {
 		items.add(new TIMWorkItem("Requirement"));//1
 		items.add(new TIMWorkItem("Change Request"));//2
 
+		items.get(0).setTrace("affectedByItems", items.get(1).getName());
+		items.get(1).setTrace("predecessorItems", items.get(2).getName());
+		items.get(1).setTrace("affectsItems", items.get(0).getName());
+
 		//Trace req = new Trace("affectedByItems", items.get(0).getName());
 		//Trace req2 = new Trace("predecessorItems", items.get(2).getName());
 		//Trace bug = new Trace("affectsItems", items.get(1).getName());
-
-		items.get(0).setTrace("affectedByItems", items.get(0).getName());
-		items.get(1).setTrace("predecessorItems", items.get(2).getName());
-		items.get(1).setTrace("affectsItems", items.get(1).getName());
-
 		//................................................
 		Map<PPEInstanceType, List<PPEInstanceType>> subsetGroups =  schemaExtractor.clusterTypes(
 				types						);
 		assertEquals(2, subsetGroups.size());
 		subsetGroups.entrySet().forEach(entry -> {
 			var props = schemaExtractor.processSubgroup(entry.getKey(), entry.getValue());
-			var schema = schemaExtractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(),items);
+			var schema = schemaExtractor.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(), items);
 			System.out.println(schema);
 		});						
 	}

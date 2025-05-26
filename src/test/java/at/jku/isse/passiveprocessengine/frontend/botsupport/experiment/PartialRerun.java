@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import at.jku.isse.passiveprocessengine.frontend.botsupport.TIMWorkItem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -184,8 +185,11 @@ class PartialRerun {
 		StringBuffer sb = new StringBuffer();
 		subsetGroups.entrySet().forEach(entry -> {
 			var props = schemaGen.processSubgroup(entry.getKey(), entry.getValue());
-			//var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue());
-			//sb.append(schema);
+
+			//I added items as an empty list ...............................................................................................
+			List<TIMWorkItem> items = new ArrayList<>();
+			var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(), items);
+			sb.append(schema);
 		});						
 		return sb.toString();
 	}
