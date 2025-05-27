@@ -187,47 +187,37 @@ public class HumanReadableSchemaExtractor {
 								
 		return new AbstractMap.SimpleEntry<>(superProps, specificProps);
 	}
-	//call my TIM
-	//check if the PPEInstanceType name has the same name in my TIM data:
-	// If yes then connect it with it trace
+
 	public String compileSchemaList(PPEInstanceType parentType, List<PPEInstanceType> group, Set<String> parentProps, List<ArrayList<String>> individualProps, List<TIMWorkItem> workItems) {
 		StringBuffer sb = new StringBuffer(String.format("\r\nGeneric object type %s contains following properties:", parentType.getName()));
 		parentProps.stream().sorted().forEach(prop -> sb.append(prop));
-				
-		for (int i = 0 ; i < group.size() ; i++) {
-			var type = group.get(i);
-			var props  = individualProps.get(i);
-			if (props.isEmpty()) continue;
-			sb.append(String.format("\r\n\r\nObject type %s contains following properties:", type.getName()));
-			props.stream().sorted().forEach(prop -> sb.append(prop));
-		}
 
-		//I started work here
-
+		//I worked here
 
 		Map<String, List<Trace>> typeWithTraces = new HashMap<>();
 		List<String> items = workItems.stream().map(workItem -> workItem.getName()).collect(Collectors.toList());
 
-		for (int i = 0; i < group.size() ; i++) {
+		for (int i = 0 ; i < group.size() ; i++) {
 			var type = group.get(i);
+			var props  = individualProps.get(i);
+			if (props.isEmpty()) continue;
+
 			for (int j = 0 ; j < items.size() ; j++) {
 				if (type.getName().equals(items.get(j))) {
 					typeWithTraces.putIfAbsent(type.getName(), workItems.get(j).getTraces());
 				}
 			}
-		}
 
-		for (Map.Entry<String, List<Trace>> entry : typeWithTraces.entrySet()) {
-			String key = entry.getKey();
-			List<Trace> traces = entry.getValue();
-			sb.append(String.format("\r\n\r\nObject type %s contains following properties:", key)).append("\n");
-
-			for (Trace trace : traces) {
-				sb.append(trace.getName()).append(" , Endpoint: ").append(trace.getEndpointName()).append("\n");
+			sb.append(String.format("\r\n\r\nObject type %s contains following properties:", type.getName()));
+			props.stream().sorted().forEach(prop -> sb.append(prop));
+			sb.append("\n");
+			for (Map.Entry<String, List<Trace>> entry : typeWithTraces.entrySet()) {
+				List<Trace> traces = entry.getValue();
+				for (Trace trace : traces) {
+					sb.append(trace.getName()).append(" of multiple ").append(trace.getEndpointName()).append("\n");
+				}
 			}
 		}
-
-
 		return sb.toString();
 	}
 

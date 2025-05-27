@@ -59,8 +59,8 @@ class TestWithEvalData {
 	private List<at.jku.isse.passiveprocessengine.frontend.botsupport.ollama.OllamaAI.Message> ollamaAImessages = new ArrayList<>(); // in case we use ollamaAI
 	 
 	//codestral:latest  qwen2.5-coder:32b        codegeex4:latest       gemma2:27b     llama3.3:latest      deepseek-r1:70b
-	private String model = "deepseek-r1:70b"; // sync with experiment output file naming below!
-	private String modelForFilePath = "deepseekr1";
+	private String model = "codestral:latest"; // sync with experiment output file naming below!
+	private String modelForFilePath = "codestral";
 	
 	HumanReadableSchemaExtractor schemaGen;
 	Gson gson = new GsonBuilder()
@@ -88,7 +88,7 @@ class TestWithEvalData {
 	void testEvalLLMGeneration() throws Exception {
 		// run for all eval data, then store as json
 		// reset bot after each eval constraint data round
-		runEvaluationAndLog(c3, bot);
+		runEvaluationAndLog(a1, bot);
 	}
 	
 	@Test 
@@ -164,6 +164,37 @@ class TestWithEvalData {
 
 			//I added items as an empty list .................................................................................................................
 			List<TIMWorkItem> items = new ArrayList<>();
+			//provide the full TIM
+			items.add(new TIMWorkItem("Bug"));//0
+			items.add(new TIMWorkItem("Requirement"));//1
+			items.add(new TIMWorkItem("Test Case"));//2
+			items.add(new TIMWorkItem("Change Request"));//3
+			items.add(new TIMWorkItem("Issue"));//4
+			items.add(new TIMWorkItem("Review"));//5
+			items.add(new TIMWorkItem("ReviewFinding"));//6
+
+			items.get(1).setTrace("affectedbyItems", items.get(0).getName());
+			items.get(0).setTrace("affectsItems", items.get(1).getName());
+			items.get(1).setTrace("predecessorItems", items.get(3).getName());
+			items.get(3).setTrace("successorItems", items.get(1).getName());
+			items.get(1).setTrace("successorItems", items.get(5).getName());
+			items.get(5).setTrace("predecessorItems", items.get(1).getName());
+			items.get(1).setTrace("successorItems", items.get(4).getName());
+			items.get(4).setTrace("predecessorItems", items.get(1).getName());
+			items.get(1).setTrace("testedbyItems", items.get(2).getName());
+			items.get(2).setTrace("testsItems", items.get(1).getName());
+			items.get(0).setTrace("predecessorItems", items.get(3).getName());
+			items.get(3).setTrace("successorItems", items.get(0).getName());
+			items.get(0).setTrace("testedbyItems", items.get(2).getName());
+			items.get(2).setTrace("testsItems", items.get(0).getName());
+			items.get(3).setTrace("successorItems", items.get(2).getName());
+			items.get(2).setTrace("predecessorItems", items.get(3).getName());
+			items.get(3).setTrace("childItems", items.get(4).getName());
+			items.get(4).setTrace("parentItems", items.get(3).getName());
+			items.get(5).setTrace("predecessorItems", items.get(2).getName());
+			items.get(2).setTrace("successorItems", items.get(5).getName());
+			items.get(5).setTrace("successorItems", items.get(6).getName());
+			items.get(6).setTrace("predecessorItems", items.get(5).getName());
 
 			var schema = schemaGen.compileSchemaList(entry.getKey(),  entry.getValue(), props.getKey(), props.getValue(), items);
 			sb.append(schema);

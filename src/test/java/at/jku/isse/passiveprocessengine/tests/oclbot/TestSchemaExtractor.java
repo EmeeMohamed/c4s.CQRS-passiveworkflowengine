@@ -185,15 +185,14 @@ class TestSchemaExtractor {
 
 		items.add(new TIMWorkItem("Bug"));//0
 		items.add(new TIMWorkItem("Requirement"));//1
-		items.add(new TIMWorkItem("Change Request"));//2
+		items.add(new TIMWorkItem("Test Case"));//2
+		items.add(new TIMWorkItem("Change Request"));//3
 
-		items.get(0).setTrace("affectedByItems", items.get(1).getName());
-		items.get(1).setTrace("predecessorItems", items.get(2).getName());
-		items.get(1).setTrace("affectsItems", items.get(0).getName());
+		items.get(1).setTrace("affectedbyItems", items.get(0).getName());
+		items.get(0).setTrace("affectsItems", items.get(1).getName());
+		items.get(1).setTrace("predecessorItems", items.get(3).getName());
+		items.get(3).setTrace("successorItems", items.get(1).getName());
 
-		//Trace req = new Trace("affectedByItems", items.get(0).getName());
-		//Trace req2 = new Trace("predecessorItems", items.get(2).getName());
-		//Trace bug = new Trace("affectsItems", items.get(1).getName());
 		//................................................
 		Map<PPEInstanceType, List<PPEInstanceType>> subsetGroups =  schemaExtractor.clusterTypes(
 				types						);
