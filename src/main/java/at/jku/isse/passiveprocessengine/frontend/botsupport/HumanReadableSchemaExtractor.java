@@ -213,8 +213,10 @@ public class HumanReadableSchemaExtractor {
 			sb.append("\n");
 			for (Map.Entry<String, List<Trace>> entry : typeWithTraces.entrySet()) {
 				List<Trace> traces = entry.getValue();
-				for (Trace trace : traces) {
-					sb.append(trace.getName()).append(" of multiple ").append(trace.getEndpointName()).append("\n");
+				if (entry.getKey().equals(type.getName())) {
+					for (Trace trace : traces) {
+						sb.append(trace.getName()).append(" of multiple ").append(trace.getEndpointName()).append("\n");
+					}
 				}
 			}
 		}
